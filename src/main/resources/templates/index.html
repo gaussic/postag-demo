@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>词性标注</title>
+
+    <!-- 最新版本的 Bootstrap 核心 CSS 文件 -->
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css"
+          integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+<div class="container">
+    <h3>中英文分词与词性标注</h3>
+    <div class="form-group row">
+        <label for="sentence_chinese" class="col-md-1" style="margin-top: 5px;">中文：</label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" id="sentence_chinese" name="sentence_chinese" placeholder="请输入中文用例">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-success" id="chinese-btn">确认</button>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label for="chinese-result" class="col-md-2">结果：</label>
+        <div class="col-md-10"></div>
+    </div>
+    <div id="chinese-result" style="height:150px; border: 1px steelblue solid; border-radius: 3px;">
+    </div>
+
+    <div class="form-group row" style="margin-top: 50px;">
+        <label for="sentence_english" class="col-md-1" style="margin-top: 5px;">English：</label>
+        <div class="col-md-10">
+            <input type="text" class="form-control" id="sentence_english" name="sentence_english" placeholder="Please Enter An English Sentence: ">
+        </div>
+        <div class="col-md-1">
+            <button type="button" class="btn btn-success" id="english-btn">Submit</button>
+        </div>
+    </div>
+    <div class="row form-group">
+        <label for="english-result" class="col-md-2">Result：</label>
+        <div class="col-md-10"></div>
+    </div>
+    <div id="english-result" style="height:150px; border: 1px steelblue solid; border-radius: 3px;">
+    </div>
+</div>
+
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+<script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"
+        integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa"
+        crossorigin="anonymous"></script>
+<script>
+    //    $.webshims.polyfill();
+    $("#chinese-btn").click(function () {
+        var chinese_sentence = $("#sentence_chinese").val();
+        if (chinese_sentence !== '') {
+            $.post("postag/chinese", {sentence_chinese: chinese_sentence}, function (data) {
+                var obj = eval('(' + data + ')');
+                var result = "<h4 style=\"padding: 4px;\">" + obj.data + "</h4>";
+                $("#chinese-result").html(result);
+            });
+        } else {
+            var chinese_alert = "<div class=\"alert alert-danger\" role=\"alert\" style=\"margin: 3px;\">请输入中文用例</div>";
+            $("#chinese-result").html(chinese_alert);
+        }
+    });
+
+    $("#english-btn").click(function () {
+        var english_sentence = $("#sentence_english").val();
+        if (english_sentence !== '') {
+            $.post("postag/english", {sentence_english: english_sentence}, function (data) {
+                var obj = eval('(' + data + ')');
+                var result = "<h4 style=\"padding: 4px;\">" + obj.data + "</h4>";
+                $("#english-result").html(result);
+            });
+        } else {
+            var english_alert = "<div class=\"alert alert-danger\" role=\"alert\" style=\"margin: 3px;\">Please enter an English sentence</div>";
+            $("#english-result").html(english_alert);
+        }
+    });
+</script>
+</body>
+</html>
